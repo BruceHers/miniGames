@@ -20,7 +20,7 @@ int main ( int argc, char** argv )
 
     /// [2] Préparation des composants
     // [2.1] Préparation de la fenêtre
-    SDL_Surface* screen = SDL_SetVideoMode(640, 480, 16,
+    SDL_Surface* screen = SDL_SetVideoMode(640, 480, 32,
                                            SDL_HWSURFACE|SDL_DOUBLEBUF);
     if ( !screen )
     {
@@ -59,7 +59,8 @@ int main ( int argc, char** argv )
         // [3.3] Dessin des composants
         SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 255, 255));
 
-        //
+
+	SDL_Delay(16);
 
         SDL_Flip(screen);
     } //fin bcl principale
