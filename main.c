@@ -2,17 +2,22 @@
 #include <SDL/SDL.h>
 #include <stdbool.h>
 #include <SDL/SDL_image.h>
+#include <stdlib.h>
 
 ///Initialisation des éléments du jeu:
 //Constante pour la taille de l'image
 const int WIDTH=1024;
 const int HEIGHT=512;
+const int DIM=6;
+const int D= 2*(DIM+1)+1;//Pour diviser l'écran en deux + des marges sur les côtés + 1 au milieu
+const int SIZE_IMG=32; //Les images affichées de chaque côté sont des carrés de 32x32
+const int W = WIDTH/D;//Pas d'une case à l'autre en largeur
+const int H = HEIGHT/(DIM+1);//Pas d'une case à l'autre en hauteur
 
-//Definition d'un type pour savoir quelle image afficher
-enum VariationImage {
-	        Normal=0,
-		Fausse,
-		Fausse_surbrillance
+//Banque de créature (recensé avec un type enum)
+enum Creat{
+	creat1 = 1,
+	creat2
 };
 
 ///Fonctions gérant les éléments du jeu :
@@ -24,10 +29,11 @@ enum VariationImage {
 //Action avec le clique
 void clic(int x,int y){
 };
-
-//Affichage
-void aff(SDL_Surface *screen){
-};
+//Action de création d'un tableau de créature
+//Creat* tabcreat(int DIM){
+//	Creat plateau[DIM][DIM];
+//	return plateau;
+//}
 
 int main ( int argc, char** argv )
 {
@@ -45,6 +51,9 @@ int main ( int argc, char** argv )
     // [1.3] Para-fenêtre
     SDL_WM_SetCaption("Affiche evil-eye", 0);
 
+    // [1.4] Préparation de la génération aléatoire
+    
+
     /// [2] Préparation des composants
     // [2.1] Préparation de la fenêtre
     SDL_Surface* screen = SDL_SetVideoMode(WIDTH, HEIGHT, 32,
@@ -56,21 +65,52 @@ int main ( int argc, char** argv )
     }
 
     // [2.2] Préparation
-    SDL_Surface* img = IMG_Load("./Textures/evil-eye.png");
-
-    SDL_Surface* evileye = IMG_Load("./Textures/evil-eye.png");
-    SDL_Surface* evileyeFake = IMG_Load("./Textures/evil-eye.png");
-    SDL_Surface* evileyeFakeShiny = IMG_Load("./Textures/evil-eye.png");
+    SDL_Surface* leftImg = IMG_Load("./Textures/evil-eye.png");
+    SDL_Surface* rightImg = IMG_Load("./Textures/evil-eye.png");
+    SDL_Surface* creat1 = IMG_Load("./Textures/creat1.png");
+    SDL_Surface* creat2 = IMG_Load("./Textures/creat2.png");
+    SDL_Rect p = { 0 }; //Pointeur utiliser pour donner des positions aux images dans le tableau normal
+    SDL_Rect pf = { 0 }; //Pour le fake
 
     // [2.3] Préparation du jeu  
+    // Création des deux plateaux identiques
+    int plateau[DIM][DIM];
+    int plateauFake[DIM][DIM];
+    int i;
+    int j;
+    for(i=0; i<DIM; i++){
+	    for(j=0; j<DIM; j++){
+		    if(i==j){
+			    plateau[i][j]=1;
+			    plateauFake[i][j]=1;
+		    }
+		    else{
+			    plateau[i][j]=0;
+			    plateauFake[i][j]=0;
+		    }
+	    }
+    }
+    // Ajout d'une différence :
+    int i_erreur = 2;
+    int j_erreur = 2;
 
-    // [2.4] Séparation de l'écran en deux :
+    int x_min_erreur = (2+DIM+i_erreur)*W;
+    int x_max_erreur = x_min_erreur + SIZE_IMG;
+    int y_min_erreur = (1+j_erreur)*H;
+    int y_max_erreur = y_min_erreur + SIZE_IMG;
+    
+    plateauFake[i_erreur][j_erreur]=0;
+
+    // Variable qui dit quand on a trouvé la différence :
+    bool b = false;
+
+    // [2.4] Séparation de l'écran en deux côté de DIMxDIM (avec marges): 
     SDL_Rect left = { 0 };
     SDL_Rect right = { 0 };
-    left.x = 0;
-    left.y = 0;
-    right.x = WIDTH/2;
-    right.y = 0; 
+    left.x = W;
+    left.y = H;
+    right.x = W +  WIDTH/2;
+    right.y = H; 
 
     /// [3] Boucle principale
     bool done = false;
@@ -89,35 +129,69 @@ int main ( int argc, char** argv )
                 if (event.key.keysym.sym == SDLK_ESCAPE)
                     done = true;
                 break;
+	    case SDL_MOUSEBUTTONUP:
+		if (event.button.button == SDL_BUTTON_LEFT){
+			if(event.button.x > x_min_erreur && event.button.x < x_max_erreur && event.button.y > y_min_erreur && event.button.y < y_max_erreur){
+				done = true;
+			}
+		}
+		break;
             } // end switch event type
         } // end of message processing
 
         // [3.2] Calculs
 
         // [3.3] Dessin des composants
-        SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 255, 255));
+        SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 196, 0, 0));
 
-	SDL_BlitSurface(img, NULL, screen, &left);
-	SDL_BlitSurface(img, NULL, screen, &right);
-	 
+	//	SDL_BlitSurface(leftImg, NULL, screen, &left);
+	//	SDL_BlitSurface(rightImg, NULL, screen, &right);
+	
+       	for(i=0; i<DIM; i++){
+		p.x = (i+1)*W;//Avec i la i-ème case de la ligne
+		pf.x = (DIM+i+2)*W;
+		for(j=0; j<DIM; j++){
+			p.y = (j+1)*H;//Avec j la j-ème case de la colonne
+			pf.y = (j+1)*H;
+			switch (plateau[i][j]){
+			case 0 :
+			   	SDL_BlitSurface(creat1, NULL, screen, &p);
+				break;	
+			case 1 :
+				SDL_BlitSurface(creat2, NULL, screen, &p);
+				break;
+			}
+			switch (plateauFake[i][j]){
+	                case 0 :
+				SDL_BlitSurface(creat1, NULL, screen, &pf); 
+      				break;
+                        case 1 :
+                                SDL_BlitSurface(creat2, NULL, screen, &pf);
+                                break;																					                        }
+		}
+        }
+    
+
 	SDL_Delay(16);
 
-        SDL_Flip(screen);
-    } //fin bcl principale
+    	SDL_Flip(screen);
+
+    }//fin bcl principale
 
     ///[4] Destruction des composants
     //[4.1] Les images initialisées
-    if(img != NULL){
-	    SDL_FreeSurface(img), img = NULL;
+    //if(leftImg != NULL){
+    if(leftImg != NULL){
+	    SDL_FreeSurface(leftImg), leftImg = NULL;
     }
-    if(evileye != NULL){
-            SDL_FreeSurface(evileye), evileye = NULL;
+    if(rightImg != NULL){
+            SDL_FreeSurface(rightImg), rightImg = NULL;
     }
-    if(evileyeFake != NULL){
-            SDL_FreeSurface(evileyeFake), evileyeFake = NULL;
+    if(creat1 != NULL){
+            SDL_FreeSurface(creat1), creat1 = NULL;
     }
-    if(evileyeFakeShiny != NULL){
-            SDL_FreeSurface(evileyeFakeShiny), evileyeFakeShiny = NULL;
+    if(creat2 != NULL){
+            SDL_FreeSurface(creat2), creat2 = NULL;
     }
 
     //[4.2] L'écran
