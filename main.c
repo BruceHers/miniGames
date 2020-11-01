@@ -5,9 +5,11 @@
 #include <stdlib.h>
 #include <time.h>
 
-///Création pour générer de l'aléatoire :
+///Création pour générer de l'aléatoire 
+//Seed 
 static bool rand_is_init = false;
 
+//Fonction donnant un chiffre aléatoire x, min<=x<max
 int rand_int (int min, int max){
 	        if(!rand_is_init){
 	                srand(time(NULL));
@@ -28,6 +30,7 @@ const int W=WIDTH/D;//Pas d'une case à l'autre en largeur
 const int H=HEIGHT/(DIM+1);//Pas d'une case à l'autre en hauteur
 const int NB_CREAT=4; //Peut être considéré comme le niveau de difficulté
 
+///Debut du main
 int main ( int argc, char** argv )
 {
     /// [1] Démarrage
@@ -58,7 +61,7 @@ int main ( int argc, char** argv )
         return 1;
     }
 
-    // [2.2] Préparation
+    // [2.2] Préparation des autres images
     SDL_Surface* leftImg = IMG_Load("./Textures/evil-eye.png");
     SDL_Surface* rightImg = IMG_Load("./Textures/evil-eye.png");
     SDL_Surface* creat1 = IMG_Load("./Textures/creat1.png");
@@ -70,10 +73,11 @@ int main ( int argc, char** argv )
     SDL_Surface* creat7 = IMG_Load("./Textures/creat7.png");
     SDL_Surface* fin = IMG_Load("./Textures/fin.png");
     
-    SDL_Rect p = { 0 }; //Pointeur utiliser pour donner des positions aux images dans le tableau normal
+    // [2.3] Préparation des pointeurs de postion pour afficher d=les images
+    SDL_Rect p = { 0 }; //Pour le tableau normal
     SDL_Rect pf = { 0 }; //Pour le fake
 
-    // [2.3] Préparation du jeu  
+    // [2.4] Préparation du jeu  
     // Création des deux plateaux identiques
     int plateau[DIM][DIM];
     int plateauFake[DIM][DIM];
@@ -109,15 +113,7 @@ int main ( int argc, char** argv )
     plateauFake[i_erreur][j_erreur]=diff;
 
     // Variable qui dit quand on a trouvé la différence :
-    bool b = false;
-
-    // [2.4] Séparation de l'écran en deux côté de DIMxDIM (avec marges): 
-    SDL_Rect left = { 0 };
-    SDL_Rect right = { 0 };
-    left.x = W;
-    left.y = H;
-    right.x = W +  WIDTH/2;
-    right.y = H; 
+    bool b = false; 
 
     /// [3] Boucle principale
     bool done = false;
@@ -132,10 +128,12 @@ int main ( int argc, char** argv )
             case SDL_QUIT:
                 done = true;
                 break;
+	//Evenement lié à l'utilisation de la touche échap
             case SDL_KEYDOWN:
                 if (event.key.keysym.sym == SDLK_ESCAPE)
                     done = true;
                 break;
+	//Evenement lié au clic de souris (gauche)	
 	    case SDL_MOUSEBUTTONUP:
 		if (event.button.button == SDL_BUTTON_LEFT){
 			if(event.button.x > x_min_erreur && event.button.x < x_max_erreur && event.button.y > y_min_erreur && event.button.y < y_max_erreur){
@@ -158,21 +156,18 @@ int main ( int argc, char** argv )
 	
 	//Si le jeu est en cours :
 	if(!done){
-        // [3.2] Calculs
 
-        // [3.3] Dessin des composants
+        // [3.2] Dessin des composants
         SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 255, 255, 255));
 
-	//	SDL_BlitSurface(leftImg, NULL, screen, &left);
-	//	SDL_BlitSurface(rightImg, NULL, screen, &right);
-	
        	for(i=0; i<DIM; i++){
 		p.x = (i+1)*W;//Avec i la i-ème case de la ligne
 		pf.x = (DIM+i+2)*W;
+		
 		for(j=0; j<DIM; j++){
 			p.y = (j+1)*H;//Avec j la j-ème case de la colonne
 			pf.y = (j+1)*H;
-			
+			//Affichage pour le plateau normal (gauche)
 			switch (plateau[i][j]){
 			case 0 :
 			   	SDL_BlitSurface(creat1, NULL, screen, &p);
@@ -196,7 +191,7 @@ int main ( int argc, char** argv )
 			        SDL_BlitSurface(creat7, NULL, screen, &p);
 			break;
 			}
-
+			//Affichage pour le plateau fake (droite)
 			switch (plateauFake[i][j]){
 	                case 0 :
 				SDL_BlitSurface(creat1, NULL, screen, &pf); 
