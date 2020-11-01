@@ -26,7 +26,7 @@ const int D= 2*(DIM+1)+1;//Pour diviser l'écran en deux + des marges sur les c�
 const int SIZE_IMG=32; //Les images affichées de chaque côté sont des carrés de 32x32
 const int W=WIDTH/D;//Pas d'une case à l'autre en largeur
 const int H=HEIGHT/(DIM+1);//Pas d'une case à l'autre en hauteur
-const int NB_CREAT=2;
+const int NB_CREAT=7;
 
 
 int main ( int argc, char** argv )
@@ -43,7 +43,7 @@ int main ( int argc, char** argv )
     atexit(SDL_Quit);
 
     // [1.3] Para-fenêtre
-    SDL_WM_SetCaption("Cliquer sur l'intru dans le groupe de droite !", 0);
+    SDL_WM_SetCaption("Clique sur l'intru dans le groupe de droite !", 0);
 
     // [1.4] Préparation de la génération aléatoire
     
@@ -63,6 +63,13 @@ int main ( int argc, char** argv )
     SDL_Surface* rightImg = IMG_Load("./Textures/evil-eye.png");
     SDL_Surface* creat1 = IMG_Load("./Textures/creat1.png");
     SDL_Surface* creat2 = IMG_Load("./Textures/creat2.png");
+    SDL_Surface* creat3 = IMG_Load("./Textures/creat3.png");
+    SDL_Surface* creat4 = IMG_Load("./Textures/creat4.png");
+    SDL_Surface* creat5 = IMG_Load("./Textures/creat5.png");
+    SDL_Surface* creat6 = IMG_Load("./Textures/creat6.png");
+    SDL_Surface* creat7 = IMG_Load("./Textures/creat7.png");
+    //SDL_Surface* creat8 = IMG_Load("./Textures/creat8.png");
+    
     SDL_Rect p = { 0 }; //Pointeur utiliser pour donner des positions aux images dans le tableau normal
     SDL_Rect pf = { 0 }; //Pour le fake
 
@@ -74,16 +81,11 @@ int main ( int argc, char** argv )
     int j;
     for(i=0; i<DIM; i++){
 	    for(j=0; j<DIM; j++){
-		    if(i==j){
-			    plateau[i][j]=1;
-			    plateauFake[i][j]=1;
-		    }
-		    else{
-			    plateau[i][j]=0;
-			    plateauFake[i][j]=0;
-		    }
+		    plateau[i][j]=rand_int(0,NB_CREAT);;
+		    plateauFake[i][j]=plateau[i][j];
 	    }
     }
+
     // Ajout d'une différence :
     int i_erreur = rand_int(0,DIM);
     int j_erreur = rand_int(0,DIM);
@@ -158,6 +160,7 @@ int main ( int argc, char** argv )
 		for(j=0; j<DIM; j++){
 			p.y = (j+1)*H;//Avec j la j-ème case de la colonne
 			pf.y = (j+1)*H;
+			
 			switch (plateau[i][j]){
 			case 0 :
 			   	SDL_BlitSurface(creat1, NULL, screen, &p);
@@ -165,14 +168,46 @@ int main ( int argc, char** argv )
 			case 1 :
 				SDL_BlitSurface(creat2, NULL, screen, &p);
 				break;
+			case 2 :
+				SDL_BlitSurface(creat3, NULL, screen, &p);
+		  	break;
+			case 3 :
+		                SDL_BlitSurface(creat4, NULL, screen, &p);
+		        break;
+ 			case 4 :
+			        SDL_BlitSurface(creat5, NULL, screen, &p);
+			break;
+		        case 5 :
+		                SDL_BlitSurface(creat6, NULL, screen, &p);
+			break;
+			case 6 :
+			        SDL_BlitSurface(creat7, NULL, screen, &p);
+			break;
 			}
+
 			switch (plateauFake[i][j]){
 	                case 0 :
 				SDL_BlitSurface(creat1, NULL, screen, &pf); 
       				break;
                         case 1 :
                                 SDL_BlitSurface(creat2, NULL, screen, &pf);
-                                break;																					                        }
+                                break;
+			case 2 :
+                                SDL_BlitSurface(creat3, NULL, screen, &pf);
+                        break;
+                        case 3 :
+                                SDL_BlitSurface(creat4, NULL, screen, &pf);
+                        break;
+                        case 4 :
+                                SDL_BlitSurface(creat5, NULL, screen, &pf);
+                        break;
+                        case 5 :
+                                SDL_BlitSurface(creat6, NULL, screen, &pf);
+                        break;
+                        case 6 :
+                                SDL_BlitSurface(creat7, NULL, screen, &pf);
+                        break;
+			}
 		}
         }
     
