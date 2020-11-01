@@ -13,6 +13,12 @@ Règles
 ------------
 
 ------------
-Bibliothèque utilisée
+Bibliothèques utilisées
 ------------
-Probablement Nuklear
+libsdl-image1.2
+libsdl1.2-dev
+
+------------
+Crédits images
+------------
+https://opengameart.org/content/32x32-pixel-art-creatures-volume-3
