@@ -26,8 +26,7 @@ const int D= 2*(DIM+1)+1;//Pour diviser l'écran en deux + des marges sur les c�
 const int SIZE_IMG=32; //Les images affichées de chaque côté sont des carrés de 32x32
 const int W=WIDTH/D;//Pas d'une case à l'autre en largeur
 const int H=HEIGHT/(DIM+1);//Pas d'une case à l'autre en hauteur
-const int NB_CREAT=7;
-
+const int NB_CREAT=4; //Peut être considéré comme le niveau de difficulté
 
 int main ( int argc, char** argv )
 {
@@ -45,8 +44,9 @@ int main ( int argc, char** argv )
     // [1.3] Para-fenêtre
     SDL_WM_SetCaption("Clique sur l'intru dans le groupe de droite !", 0);
 
-    // [1.4] Préparation de la génération aléatoire
-    
+    // [1.4] Préparation de la sauvegarde
+    FILE* data = NULL;
+    data = fopen("sauvegarde.txt","r+");    
 
     /// [2] Préparation des composants
     // [2.1] Préparation de la fenêtre
@@ -143,6 +143,12 @@ int main ( int argc, char** argv )
 				SDL_BlitSurface(fin, NULL, screen, NULL);
 				SDL_Flip(screen);
 				SDL_Delay(1600);
+				fseek(data, 0, SEEK_END);
+				fputs("Partie terminée en ",data);
+				int time = SDL_GetTicks();
+				time = time/1000;
+				fprintf(data, "%d", time);
+				fputs(" secondes\n",data);
 				done=true;
 			}
 		}
@@ -242,6 +248,9 @@ int main ( int argc, char** argv )
 
     //[4.2] L'écran
     SDL_FreeSurface(screen);
+    
+    //[4.3] Fermeture du fichier de sauvegarde
+    fclose(data);
 
 
     printf("Aucune erreur détectée.");
