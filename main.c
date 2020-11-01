@@ -68,7 +68,7 @@ int main ( int argc, char** argv )
     SDL_Surface* creat5 = IMG_Load("./Textures/creat5.png");
     SDL_Surface* creat6 = IMG_Load("./Textures/creat6.png");
     SDL_Surface* creat7 = IMG_Load("./Textures/creat7.png");
-    //SDL_Surface* creat8 = IMG_Load("./Textures/creat8.png");
+    SDL_Surface* fin = IMG_Load("./Textures/fin.png");
     
     SDL_Rect p = { 0 }; //Pointeur utiliser pour donner des positions aux images dans le tableau normal
     SDL_Rect pf = { 0 }; //Pour le fake
@@ -124,7 +124,7 @@ int main ( int argc, char** argv )
     while (!done)
     {
         // [3.1] Gestion évènements
-        SDL_Event event;
+	SDL_Event event;
         while (SDL_PollEvent(&event))
         {
             switch (event.type)
@@ -139,13 +139,19 @@ int main ( int argc, char** argv )
 	    case SDL_MOUSEBUTTONUP:
 		if (event.button.button == SDL_BUTTON_LEFT){
 			if(event.button.x > x_min_erreur && event.button.x < x_max_erreur && event.button.y > y_min_erreur && event.button.y < y_max_erreur){
-				done = true;
+				SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 0, 0));
+				SDL_BlitSurface(fin, NULL, screen, NULL);
+				SDL_Flip(screen);
+				SDL_Delay(1600);
+				done=true;
 			}
 		}
 		break;
             } // end switch event type
         } // end of message processing
-
+	
+	//Si le jeu est en cours :
+	if(!done){
         // [3.2] Calculs
 
         // [3.3] Dessin des composants
@@ -210,12 +216,12 @@ int main ( int argc, char** argv )
 			}
 		}
         }
-    
+        }
 
 	SDL_Delay(16);
 
     	SDL_Flip(screen);
-
+	
     }//fin bcl principale
 
     ///[4] Destruction des composants
