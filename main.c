@@ -3,6 +3,19 @@
 #include <stdbool.h>
 #include <SDL/SDL_image.h>
 #include <stdlib.h>
+#include <time.h>
+
+///Création pour générer de l'aléatoire :
+static bool rand_is_init = false;
+
+int rand_int (int min, int max){
+	        if(!rand_is_init){
+	                srand(time(NULL));
+	                rand_is_init = true;
+	        }
+	        return(rand()%(max - min) + min);
+}
+
 
 ///Initialisation des éléments du jeu:
 //Constante pour la taille de l'image
@@ -11,29 +24,10 @@ const int HEIGHT=512;
 const int DIM=6;
 const int D= 2*(DIM+1)+1;//Pour diviser l'écran en deux + des marges sur les côtés + 1 au milieu
 const int SIZE_IMG=32; //Les images affichées de chaque côté sont des carrés de 32x32
-const int W = WIDTH/D;//Pas d'une case à l'autre en largeur
-const int H = HEIGHT/(DIM+1);//Pas d'une case à l'autre en hauteur
+const int W=WIDTH/D;//Pas d'une case à l'autre en largeur
+const int H=HEIGHT/(DIM+1);//Pas d'une case à l'autre en hauteur
+const int NB_CREAT=2;
 
-//Banque de créature (recensé avec un type enum)
-enum Creat{
-	creat1 = 1,
-	creat2
-};
-
-///Fonctions gérant les éléments du jeu :
-//Code utilisé pour détruire une image
-//if(img != NULL){
-//	                SDL_FreeSurface(img), img = NULL;
-//}
-
-//Action avec le clique
-void clic(int x,int y){
-};
-//Action de création d'un tableau de créature
-//Creat* tabcreat(int DIM){
-//	Creat plateau[DIM][DIM];
-//	return plateau;
-//}
 
 int main ( int argc, char** argv )
 {
@@ -91,15 +85,26 @@ int main ( int argc, char** argv )
 	    }
     }
     // Ajout d'une différence :
-    int i_erreur = 2;
-    int j_erreur = 2;
+    int i_erreur = rand_int(0,DIM);
+    int j_erreur = rand_int(0,DIM);
 
     int x_min_erreur = (2+DIM+i_erreur)*W;
     int x_max_erreur = x_min_erreur + SIZE_IMG;
     int y_min_erreur = (1+j_erreur)*H;
     int y_max_erreur = y_min_erreur + SIZE_IMG;
     
-    plateauFake[i_erreur][j_erreur]=0;
+    int diff = rand_int(0,NB_CREAT);
+    
+    if (plateau[i_erreur][j_erreur]==diff){
+    	if (plateau[i_erreur][j_erreur]==0){
+	    diff = 1;	    
+	}
+	else{
+	    diff = plateau[i_erreur][j_erreur] - 1;
+	}
+    }
+
+    plateauFake[i_erreur][j_erreur]=diff;
 
     // Variable qui dit quand on a trouvé la différence :
     bool b = false;
