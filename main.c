@@ -23,12 +23,12 @@ int rand_int (int min, int max){
 //Constante pour la taille de l'image
 const int WIDTH=1024;
 const int HEIGHT=512;
-const int DIM=6;
+const int DIM=6; // Peut augmenté/diminué la difficulté (sous réserves de modifications du reste du programme)
 const int D= 2*(DIM+1)+1;//Pour diviser l'écran en deux + des marges sur les côtés + 1 au milieu
 const int SIZE_IMG=32; //Les images affichées de chaque côté sont des carrés de 32x32
 const int W=WIDTH/D;//Pas d'une case à l'autre en largeur
 const int H=HEIGHT/(DIM+1);//Pas d'une case à l'autre en hauteur
-const int NB_CREAT=4; //Peut être considéré comme le niveau de difficulté
+const int NB_CREAT=7; //Peut être considéré comme le niveau de difficulté (2 -> Trop facile, 4 -> Moyen, 7 -> Difficile)
 
 ///Debut du main
 int main ( int argc, char** argv )
