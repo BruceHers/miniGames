@@ -3,8 +3,31 @@
 #include <stdbool.h>
 #include <SDL/SDL_image.h>
 
-const int WIDTH=640;
-const int HEIGHT=480;
+///Initialisation des éléments du jeu:
+//Constante pour la taille de l'image
+const int WIDTH=1024;
+const int HEIGHT=512;
+
+//Definition d'un type pour savoir quelle image afficher
+enum VariationImage {
+	        Normal=0,
+		Fausse,
+		Fausse_surbrillance
+};
+
+///Fonctions gérant les éléments du jeu :
+//Code utilisé pour détruire une image
+//if(img != NULL){
+//	                SDL_FreeSurface(img), img = NULL;
+//}
+
+//Action avec le clique
+void clic(int x,int y){
+};
+
+//Affichage
+void aff(SDL_Surface *screen){
+};
 
 int main ( int argc, char** argv )
 {
@@ -35,9 +58,19 @@ int main ( int argc, char** argv )
     // [2.2] Préparation
     SDL_Surface* img = IMG_Load("./Textures/evil-eye.png");
 
+    SDL_Surface* evileye = IMG_Load("./Textures/evil-eye.png");
+    SDL_Surface* evileyeFake = IMG_Load("./Textures/evil-eye.png");
+    SDL_Surface* evileyeFakeShiny = IMG_Load("./Textures/evil-eye.png");
 
-    // [2.3] Préparation des ...
+    // [2.3] Préparation du jeu  
 
+    // [2.4] Séparation de l'écran en deux :
+    SDL_Rect left = { 0 };
+    SDL_Rect right = { 0 };
+    left.x = 0;
+    left.y = 0;
+    right.x = WIDTH/2;
+    right.y = 0; 
 
     /// [3] Boucle principale
     bool done = false;
@@ -64,14 +97,30 @@ int main ( int argc, char** argv )
         // [3.3] Dessin des composants
         SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 255, 255));
 
-	SDL_BlitSurface(img, NULL, screen, NULL);
-
+	SDL_BlitSurface(img, NULL, screen, &left);
+	SDL_BlitSurface(img, NULL, screen, &right);
+	 
 	SDL_Delay(16);
 
         SDL_Flip(screen);
     } //fin bcl principale
 
     ///[4] Destruction des composants
+    //[4.1] Les images initialisées
+    if(img != NULL){
+	    SDL_FreeSurface(img), img = NULL;
+    }
+    if(evileye != NULL){
+            SDL_FreeSurface(evileye), evileye = NULL;
+    }
+    if(evileyeFake != NULL){
+            SDL_FreeSurface(evileyeFake), evileyeFake = NULL;
+    }
+    if(evileyeFakeShiny != NULL){
+            SDL_FreeSurface(evileyeFakeShiny), evileyeFakeShiny = NULL;
+    }
+
+    //[4.2] L'écran
     SDL_FreeSurface(screen);
 
 
