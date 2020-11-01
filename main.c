@@ -49,7 +49,7 @@ int main ( int argc, char** argv )
     atexit(SDL_Quit);
 
     // [1.3] Para-fenêtre
-    SDL_WM_SetCaption("Affiche evil-eye", 0);
+    SDL_WM_SetCaption("Cliquer sur l'intru dans le groupe de droite !", 0);
 
     // [1.4] Préparation de la génération aléatoire
     
@@ -142,7 +142,7 @@ int main ( int argc, char** argv )
         // [3.2] Calculs
 
         // [3.3] Dessin des composants
-        SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 196, 0, 0));
+        SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 255, 255, 255));
 
 	//	SDL_BlitSurface(leftImg, NULL, screen, &left);
 	//	SDL_BlitSurface(rightImg, NULL, screen, &right);
