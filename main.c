@@ -1,6 +1,10 @@
 #include <stdio.h>
 #include <SDL/SDL.h>
 #include <stdbool.h>
+#include <SDL/SDL_image.h>
+
+const int WIDTH=640;
+const int HEIGHT=480;
 
 int main ( int argc, char** argv )
 {
@@ -8,7 +12,7 @@ int main ( int argc, char** argv )
     // [1.1] Démarrages SDL
     if ( SDL_Init( SDL_INIT_VIDEO ) < 0)
     {
-        printf("Impossible d'initialiser la SDL: ",SDL_GetError());
+        printf("Impossible d'initialiser la SDL: %s ",SDL_GetError());
         return 1;
     }
 
@@ -16,19 +20,20 @@ int main ( int argc, char** argv )
     atexit(SDL_Quit);
 
     // [1.3] Para-fenêtre
-    SDL_WM_SetCaption("Application SDL", 0);
+    SDL_WM_SetCaption("Affiche evil-eye", 0);
 
     /// [2] Préparation des composants
     // [2.1] Préparation de la fenêtre
-    SDL_Surface* screen = SDL_SetVideoMode(640, 480, 32,
+    SDL_Surface* screen = SDL_SetVideoMode(WIDTH, HEIGHT, 32,
                                            SDL_HWSURFACE|SDL_DOUBLEBUF);
     if ( !screen )
     {
-        printf("Unable to set 640x480 video: ",SDL_GetError());
+        printf("Unable to set 640x480 video: %s ",SDL_GetError());
         return 1;
     }
 
     // [2.2] Préparation
+    SDL_Surface* img = IMG_Load("./Textures/evil-eye.png");
 
 
     // [2.3] Préparation des ...
@@ -59,6 +64,7 @@ int main ( int argc, char** argv )
         // [3.3] Dessin des composants
         SDL_FillRect(screen, 0, SDL_MapRGB(screen->format, 0, 255, 255));
 
+	SDL_BlitSurface(img, NULL, screen, NULL);
 
 	SDL_Delay(16);
 
